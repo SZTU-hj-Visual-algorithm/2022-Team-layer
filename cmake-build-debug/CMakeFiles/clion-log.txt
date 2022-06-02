@@ -1,0 +1,5 @@
+/home/hjcv/Desktop/clion/clion-2021.1.2/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/bin/make -DCMAKE_C_COMPILER=/bin/gcc -DCMAKE_CXX_COMPILER=/bin/g++ -G "CodeBlocks - Unix Makefiles" /home/hjcv/Desktop/yolo_opencv
+-- Found OpenCV: /usr/local (found suitable version "4.6.0", minimum required is "4.5.4") 
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/hjcv/Desktop/yolo_opencv/cmake-build-debug

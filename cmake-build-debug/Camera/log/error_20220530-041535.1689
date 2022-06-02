@@ -1,0 +1,4 @@
+Log file created at: 2022/05/30 04:15:35
+Running on machine: hjcv-alienwarearea51m
+Log line format: [IWEF]mmdd hh:mm:ss.uuuuuu threadid file:line] msg
+E0530 04:15:35.326155  1689 MVCAMAPI.cpp:352] CameraInit Failed, err:-19,Version:2.1.0.27,FriendlyName:‘,SN:
