@@ -15,8 +15,8 @@ yolo::yolo(Net_config &net_congfig)
     {
         printf("not load onnx failed!!!\n");
     }
-    net.setPreferableBackend(dnn::DNN_BACKEND_OPENCV);
-    net.setPreferableTarget(dnn::DNN_TARGET_CPU);
+//    net.setPreferableBackend(dnn::DNN_BACKEND_OPENCV);
+//    net.setPreferableTarget(dnn::DNN_TARGET_CPU);
 
 
 
@@ -34,7 +34,7 @@ yolo::yolo(Net_config &net_congfig)
 
 }
 
-void yolo::detect(Mat &frame)
+vector<send_data_2d> yolo::detect(Mat &frame)
 {
     int row = frame.rows;
     int col = frame.cols;
@@ -42,7 +42,7 @@ void yolo::detect(Mat &frame)
 //    cout<<col<<endl;
     int _max = row>col ? row : col;
     Mat src(_max,_max,CV_8UC3,Scalar(0,0,0));
-    cout<<src.size()<<endl;
+//    cout<<src.size()<<endl;
 //    Rect mask(Point(0,0),Point(col,row));
     frame.copyTo(src(Rect (0,0,col,row)));
 //    src(mask) &= frame;
@@ -50,63 +50,62 @@ void yolo::detect(Mat &frame)
     Mat blob;
     dnn::blobFromImage(src,blob,1.0/255.0,Size(INPUT_WIDTH,INPUT_HEIGHT),Scalar(0,0,0),true, false);
 //    cout<<blob.size()<<endl;
-    cout<<blob.cols<<endl;
-    cout<<blob.rows<<endl;
+//    cout<<blob.cols<<endl;
+//    cout<<blob.rows<<endl;
     net.setInput(blob);
-//    vector<Mat> outs;
-//    net.forward(outs);
-
+    vector<Mat> outs;
+    net.forward(outs);
     float ratio_h = (float)src.rows / (float)INPUT_HEIGHT;
     float ratio_w = (float)src.cols / (float)INPUT_WIDTH;
-//    vector<int> classids;
-//    vector<float> confidences;
-//    vector<Rect> boxes;
+    vector<int> classids;
+    vector<float> confidences;
+    vector<Rect> boxes;
     int net_width = class_nums + 5;  //输出的网络宽度是类别数+5
     cout<<net_width<<endl;
-//    float* pdata = (float*)outs[0].data;
-//    for (int i=0;i<outs[0].size().width;i++)
-//    {
-//            float score = pdata[4]; ;//获取每一行的box框中含有某个物体的概率
+    float* pdata = (float*)outs[0].data;
+    for (int i=0;i<outs[0].size().width;i++)
+    {
+            float score = pdata[4]; ;//获取每一行的box框中含有某个物体的概率
 //            cout<<score<<"\t";
 //            cout<<pdata[0]<<"\t"<<pdata[1]<<"\t"<<pdata[2]<<"\t"<<pdata[3]<<"\t"<<endl;
-//            if (score >= scothreshold) {
-//                cv::Mat scores(1, class_names.size(), CV_32FC1, pdata + 5);
-//                Point classIdPoint;
-//                double max_class_socre;
-//                minMaxLoc(scores, 0, &max_class_socre, 0, &classIdPoint);
-//                max_class_socre = (float)max_class_socre;
+            if (score >= scothreshold) {
+                cv::Mat scores(1, class_names.size(), CV_32FC1, pdata + 5);
+                Point classIdPoint;
+                double max_class_socre;
+                minMaxLoc(scores, 0, &max_class_socre, 0, &classIdPoint);
+                max_class_socre = (float)max_class_socre;
 //                cout<<max_class_socre<<endl;
-//                if (max_class_socre >= conthreshold) {
-//                    float x = pdata[0];  //x
-//                    float y = pdata[1];  //y
-//                    float w = pdata[2];  //w
-//                    float h = pdata[3];  //h
-//                    int left = (x - 0.5 * w) * ratio_w;
-//                    int top = (y - 0.5 * h) * ratio_h;
-//                    classids.push_back(classIdPoint.x);
-//                    confidences.push_back(max_class_socre * score);
-//                    boxes.emplace_back(left, top, int(w * ratio_w), int(h * ratio_h));
-//                }
-//            }
-//            pdata += net_width;//下一行
-//    }
+                if (max_class_socre >= conthreshold) {
+                    float x = pdata[0];  //x
+                    float y = pdata[1];  //y
+                    float w = pdata[2];  //w
+                    float h = pdata[3];  //h
+                    int left = (x - 0.5 * w) * ratio_w;
+                    int top = (y - 0.5 * h) * ratio_h;
+                    classids.push_back(classIdPoint.x);
+                    confidences.push_back(max_class_socre * score);
+                    boxes.emplace_back(left, top, int(w * ratio_w), int(h * ratio_h));
+                }
+            }
+            pdata += net_width;//下一行
+    }
 
-//    vector<int> indices;
-//    dnn::NMSBoxes(boxes,confidences,scothreshold*conthreshold,nmsthreshold,indices);
-//
-//    vector<int> result_classids;
-//    vector<float> result_confidences;
-//    vector<Rect> result_boxes;
-//    for (int indice : indices)
-//    {
-//        result_boxes.push_back(boxes[indice]);
-//        result_classids.push_back(classids[indice]);
-//        result_confidences.push_back(confidences[indice]);
-//
-//    }
+    vector<int> indices;
+    dnn::NMSBoxes(boxes,confidences,scothreshold*conthreshold,nmsthreshold,indices);
 
-    vector<send_data_2d> send /*= get_data(result_classids,result_confidences,result_boxes, frame)*/;
-//    return send;
+    vector<int> result_classids;
+    vector<float> result_confidences;
+    vector<Rect> result_boxes;
+    for (int indice : indices)
+    {
+        result_boxes.push_back(boxes[indice]);
+        result_classids.push_back(classids[indice]);
+        result_confidences.push_back(confidences[indice]);
+
+    }
+
+    vector<send_data_2d> send = get_data(result_classids,result_confidences,result_boxes, frame);
+    return send;
 
 }
 
@@ -182,7 +181,7 @@ vector<send_data_2d> yolo::get_data(vector<int> &classids, vector<float> &confid
 
 Eigen::Vector3d yolo::pnp_get_pc(const cv::Point2f *p, const double& w, const double& h)
 {
-//    Point2f lu, ld, ru, rd;
+    Point2f lu, ld, ru, rd;
     //这里的三维点最后要换成场上的标记点
     vector<cv::Point3d> ps = {
             {-w / 2.0 , -h / 2.0, 0.},
@@ -190,28 +189,28 @@ Eigen::Vector3d yolo::pnp_get_pc(const cv::Point2f *p, const double& w, const do
             {w / 2.0 , h / 2.0, 0.},
             {-w / 2.0 , h / 2.0, 0.}
     };
-//    if (p[0].y < p[1].y) {
-//        lu = p[0];
-//        ld = p[1];
-//    }
-//    else {
-//        lu = p[1];
-//        ld = p[0];
-//    }
-//    if (p[2].y < p[3].y) {
-//        ru = p[2];
-//        rd = p[3];
-//    }
-//    else {
-//        ru = p[3];
-//        rd = p[2];
-//    }
+    if (p[0].y < p[1].y) {
+        lu = p[0];
+        ld = p[1];
+    }
+    else {
+        lu = p[1];
+        ld = p[0];
+    }
+    if (p[2].y < p[3].y) {
+        ru = p[2];
+        rd = p[3];
+    }
+    else {
+        ru = p[3];
+        rd = p[2];
+    }
 
     vector<Point2f> pu;
-    pu.push_back(p[1]);
-    pu.push_back(p[2]);
-    pu.push_back(p[3]);
-    pu.push_back(p[4]);
+    pu.push_back(lu);
+    pu.push_back(ru);
+    pu.push_back(rd);
+    pu.push_back(ld);
 
     Mat rvec;
     Mat tvec;

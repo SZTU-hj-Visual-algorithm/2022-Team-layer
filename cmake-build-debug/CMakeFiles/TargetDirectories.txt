@@ -1,4 +1,4 @@
-/home/hjcv/Desktop/yolo_opencv/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/hjcv/Desktop/yolo_opencv/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/hjcv/Desktop/yolo_opencv/cmake-build-debug/CMakeFiles/yolo_dir.dir
-/home/hjcv/Desktop/yolo_opencv/cmake-build-debug/CMakeFiles/yolo_opencv.dir
+F:/SZTU-hj-algorithm/2022-Team-layer/cmake-build-debug/CMakeFiles/edit_cache.dir
+F:/SZTU-hj-algorithm/2022-Team-layer/cmake-build-debug/CMakeFiles/yolo_opencv.dir
+F:/SZTU-hj-algorithm/2022-Team-layer/cmake-build-debug/CMakeFiles/yolo_dir.dir
+F:/SZTU-hj-algorithm/2022-Team-layer/cmake-build-debug/CMakeFiles/rebuild_cache.dir

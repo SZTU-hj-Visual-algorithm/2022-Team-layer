@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/yolo_opencv.dir/main.cpp.o"
-  "yolo_opencv"
+  "CMakeFiles/yolo_opencv.dir/main.cpp.obj"
+  "libyolo_opencv.dll.a"
+  "yolo_opencv.exe"
+  "yolo_opencv.exe.manifest"
   "yolo_opencv.pdb"
 )
 

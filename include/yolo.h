@@ -65,7 +65,7 @@ class yolo
     cv::Mat F_MAT;
     cv::Mat C_MAT;
     Eigen::Matrix3d F_EGN;
-    Eigen::Matrix<double,5,1> C_EGN;
+    Eigen::Matrix<double,1,5> C_EGN;
     const double armor_w = 230;//mm
     const double armor_h = 127;
     const double car_w = 1000;
@@ -85,7 +85,7 @@ public:
 
     yolo(Net_config &net_congfig);
 
-    void detect(cv::Mat &frame);
+    vector<send_data_2d> detect(cv::Mat &frame);
     vector<send_data_2d> get_data(vector<int> &classids, vector<float> &confidences, vector<cv::Rect> &boxes, cv::Mat &src);
 
     Eigen::Vector3d pnp_get_pc(const cv::Point2f *p, const double &w, const double &h);

@@ -1,2 +1,2 @@
-/bin/ar qc libyolo_dir.a CMakeFiles/yolo_dir.dir/src/camera.cpp.o CMakeFiles/yolo_dir.dir/src/yolo.cpp.o
-/bin/ranlib libyolo_dir.a
+E:\Mingw\mingw64\bin\ar.exe qc libyolo_dir.a CMakeFiles/yolo_dir.dir/src/camera.cpp.obj CMakeFiles/yolo_dir.dir/src/yolo.cpp.obj
+E:\Mingw\mingw64\bin\ranlib.exe libyolo_dir.a
